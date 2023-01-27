@@ -1,0 +1,27 @@
+{
+  "name": "threejs-investigation",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "bin": {
+    "threejs-investigation": "index.js"
+  },
+  "scripts": {
+    "dev": "http-server",
+    "build": "webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Three.js",
+    "Webpack"
+  ],
+  "author": "Anton Miazyn <miazyn.anton@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "three": "^0.149.0"
+  }
+}
