@@ -17,18 +17,31 @@ const material = new THREE.MeshBasicMaterial( { color: 0x101555 } );
 const cube = new THREE.Mesh( geometry, material );
 
 cube.position.x = 0;
-scene.add( cube );
+// scene.add( cube );
 
 const loader = new GLTFLoader()
-  loader.load( './src/models/microphone.glb', function ( gltf ) {
+loader.load(
+  './src/models/microphone.glb',
+  gltf => {
+    gltf.scene.position.x = 0;
     scene.add( gltf.scene );
 
-    console.log(gltf.scene)
-  }, undefined, function ( error ) {
-    console.error( error );
-  })
+    (function animate() {
+      gltf.scene.rotation.x += 0.01;
+    
+      requestAnimationFrame( animate );
+      renderer.render( scene, camera );
+    })();
+  },
+  undefined,
+  error => console.error( error )
+)
 
-camera.position.z = 2;
+const ambientLight = new THREE.AmbientLight(0xFFFFFF);
+ambientLight.intensity = 4;
+scene.add( ambientLight );
+
+camera.position.z = 0.3;
 
 function animate() {
   cube.rotation.y += 0.01;
@@ -38,7 +51,7 @@ function animate() {
 }
 
 function zoom () {
-  camera.position.z += 0.01;
+  camera.position.z -= 0.1;
 }
 
 if ( WebGL.isWebGLAvailable() ) {
