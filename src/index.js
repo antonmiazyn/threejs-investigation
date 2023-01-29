@@ -1,67 +1,70 @@
-import * as THREE from 'three'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import WebGL from './plugins/WebGL'
+import {
+  Scene,
+  SphereGeometry,
+  MeshStandardMaterial,
+  Mesh,
+  PerspectiveCamera,
+  WebGLRenderer,
+  PointLight
+} from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
-const wrapper = document.querySelector('#scene');
+if (WebGL.isWebGLAvailable()) {
+  const scene = new Scene()
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
+  const geometry = new SphereGeometry(3, 64, 64)
+  const material = new MeshStandardMaterial({ color: '#00FF00', roughness: 0.25 })
+  const mesh = new Mesh(geometry, material)
+  scene.add(mesh)
 
-renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.setClearColor('#efefef')
-wrapper.append( renderer.domElement );
+  const light = new PointLight('#FFFFFF', 1, 100)
+  light.position.set(0, 10, 10)
+  scene.add(light)
 
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x101555 } );
-const cube = new THREE.Mesh( geometry, material );
+  const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  }
 
-cube.position.x = 0;
-// scene.add( cube );
+  const camera = new PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
+  camera.position.z = 20
+  scene.add(camera)
 
-const loader = new GLTFLoader()
-loader.load(
-  './src/models/microphone.glb',
-  gltf => {
-    gltf.scene.position.x = 0;
-    scene.add( gltf.scene );
+  const renderer = new WebGLRenderer()
+  renderer.setSize(sizes.width, sizes.height)
+  renderer.render(scene, camera)
 
-    (function animate() {
-      gltf.scene.rotation.x += 0.01;
-    
-      requestAnimationFrame( animate );
-      renderer.render( scene, camera );
-    })();
-  },
-  undefined,
-  error => console.error( error )
-)
+  const canvas = document.querySelector('#scene')
+  canvas.appendChild( renderer.domElement )
 
-const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-ambientLight.intensity = 4;
-scene.add( ambientLight );
+  const controls = new OrbitControls(camera, canvas)
+  controls.enableDamping = true
+  controls.enablePan = false
+  controls.enableZoom = false
+  controls.autoRotate = true
+  controls.autoRotateSpeed = 8
 
-camera.position.z = 0.3;
+  window.addEventListener('resize', () => {
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
 
-function animate() {
-  cube.rotation.y += 0.01;
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
 
-	requestAnimationFrame( animate );
-	renderer.render( scene, camera );
+    renderer.setSize(sizes.width, sizes.height)
+  })
+
+
+  const update = () => {
+    const fps = 60
+
+    controls.update()
+    renderer.render(scene, camera)
+
+    setTimeout(() => window.requestAnimationFrame(update), 1000 / fps)
+  }
+  update()
 }
 
-function zoom () {
-  camera.position.z -= 0.1;
-}
-
-if ( WebGL.isWebGLAvailable() ) {
-	animate();
-
-  window.addEventListener('mousewheel', zoom)
-
-} else {
-
-	const warning = WebGL.getWebGLErrorMessage();
-	document.getElementById( 'container' ).appendChild( warning );
-
-}
+// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
