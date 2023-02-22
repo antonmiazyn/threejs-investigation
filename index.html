@@ -1,14 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Three.js | Investigation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css">
 </head>
-<body style="margin: 0;">
-  <div id="scene"></div>
 
-  <script src="./dist/bundle.js"></script>
+<body>
+  <section class="animation-section">
+    <div class="halo"></div>
+    <div id="scene"></div>
+  </section>
+  <div class="swiper page-slider">
+    <div class="swiper-wrapper">
+      <section class="swiper-slide">
+        <!-- empty slide -->
+      </section>
+      <section class="swiper-slide content-section">
+        <div class="site-container">
+          <div class="fade-up content-section__inner">
+            <p>
+              Mercury is the smallest planet in the solar system and the closest planet to the sun. It is named after
+              the
+              Roman
+              messenger god, Mercury. Mercury's surface is heavily cratered and has many cliffs and escarpments,
+              indicating
+              that
+              it has experienced significant geological activity in the past. It has a thin atmosphere that is
+              constantly
+              blasted away by the solar wind, leaving the planet's surface exposed to the harsh space environment.
+              <br><br>
+              Despite its proximity to the sun, temperatures on Mercury can be extremely cold due to its lack of
+              atmosphere
+              to
+              trap heat.
+              <br><br>
+              The planet has been visited by only two spacecraft, Mariner 10 in 1974-75 and MESSENGER from 2011-15. The
+              data
+              returned from these missions has greatly increased our understanding of this fascinating planet.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="swiper-slide image-section">
+        <div class="site-container">
+          <div class="image-section__inner">
+            <h2 class="fade-up">MESSENGER from 2011-15</h2>
+            <div class="fade-up image-section__image">
+              <img src="./src/photo.jpg" alt="Mercury Photo">
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="swiper-slide">
+        <!-- empty slide -->
+      </section>
+      <section class="swiper-slide">
+        <!-- empty slide -->
+      </section>
+    </div>
+  </div>
+
+  <script src="./dist/bundle.min.js"></script>
 </body>
+
 </html>

@@ -1,70 +1,53 @@
-import WebGL from './plugins/WebGL'
-import {
-  Scene,
-  SphereGeometry,
-  MeshStandardMaterial,
-  Mesh,
-  PerspectiveCamera,
-  WebGLRenderer,
-  PointLight
-} from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import WebGL from "./plugins/WebGL";
+import * as THREE from "three";
+import View from "./modules/View";
 
-if (WebGL.isWebGLAvailable()) {
-  const scene = new Scene()
+import { SetAnimation } from "./modules/Animation";
 
-  const geometry = new SphereGeometry(3, 64, 64)
-  const material = new MeshStandardMaterial({ color: '#00FF00', roughness: 0.25 })
-  const mesh = new Mesh(geometry, material)
-  scene.add(mesh)
+const CONFIG = {
+  clearColor: "#060406",
+  pixelRatio: 1
+};
 
-  const light = new PointLight('#FFFFFF', 1, 100)
-  light.position.set(0, 10, 10)
-  scene.add(light)
+window.addEventListener("DOMContentLoaded", () => {
+  if (!WebGL.isWebGLAvailable()) {
+    console.log(
+      "Your browser doesn't support WebGL. Imposible to run 3D animation."
+    );
 
+    return;
+  }
+
+  const source = document.querySelector("#scene");
   const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-  }
+    width: source.offsetWidth,
+    height: source.offsetHeight
+  };
 
-  const camera = new PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-  camera.position.z = 20
-  scene.add(camera)
+  const view = new View({ ...CONFIG, source, sizes });
+  view.setup();
 
-  const renderer = new WebGLRenderer()
-  renderer.setSize(sizes.width, sizes.height)
-  renderer.render(scene, camera)
+  const { scene, model, light, camera, renderer } = view.getComponents();
 
-  const canvas = document.querySelector('#scene')
-  canvas.appendChild( renderer.domElement )
+  window.addEventListener("resize", () => {
+    sizes.width = source.offsetWidth;
+    sizes.height = source.offsetHeight;
 
-  const controls = new OrbitControls(camera, canvas)
-  controls.enableDamping = true
-  controls.enablePan = false
-  controls.enableZoom = false
-  controls.autoRotate = true
-  controls.autoRotateSpeed = 8
+    view.resize(sizes);
+  });
 
-  window.addEventListener('resize', () => {
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
+  (function update() {
+    window.requestAnimationFrame(update);
 
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
+    model.rotation.y += 0.001;
+    renderer.render(scene, camera);
+  })();
 
-    renderer.setSize(sizes.width, sizes.height)
-  })
-
-
-  const update = () => {
-    const fps = 60
-
-    controls.update()
-    renderer.render(scene, camera)
-
-    setTimeout(() => window.requestAnimationFrame(update), 1000 / fps)
-  }
-  update()
-}
-
-// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  SetAnimation(
+    model,
+    light[0],
+    light[2],
+    new THREE.Color("#B31E12"),
+    new THREE.Color("#FF200D")
+  );
+});
